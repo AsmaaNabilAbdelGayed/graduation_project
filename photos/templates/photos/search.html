@@ -1,0 +1,39 @@
+{% extends 'photos/base.html' %}
+
+{% block some_page_contents %}
+
+    {% load staticfiles %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'photos/pins.css' %}">
+    <div class="container">
+
+        {% if empty == 0 %}
+            <ul>
+                {% for image in related_images %}
+                    <li style="display: inline">
+                        <div id="wrapper">
+                            <div id="columns">
+                                <div class="pin">
+                                    <a href="{% url 'photos:detail' image.id %}" >
+                                        <img src="{{ image.photo.url }}" class="img-responsive" style="float: left;"/>
+                                        <form action="{% url 'cart:cart_add' image.id %}" method="post">
+                                            {{ cart_product_form }}
+                                            {% csrf_token %}
+                                            <input type="submit" value="Add to cart">
+                                        </form>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You can only search for the for the following categories.</p>
+            {% for class in all_classes %}
+                <button name="class_name" type="submit" class="btn btn-default" onclick="location.href='{% url 'photos:search_buttons' class.id %}'">{{ class.class_name}}</button><br>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+{% endblock %}

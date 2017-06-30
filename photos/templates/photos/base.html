@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>{% block title %}Pics{% endblock %}</title>
+    <!-- load the path to my static files -->
+    {% load staticfiles %}
+    <!-- 2wel link da 34an ne2dar nesta5dem default bootstrab bs w hwa online mo4 lazem anazelo 3ndy-->
+    <!-- lazem ykon abl ma link el stylesheets bta3ty 34an elly byezhar fel 2a5er by overwrite 3la elly ablo-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'photos/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse" >
+        <div class="container-fluid">
+
+            <!-- Header -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'photos:index' %}">Pics</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="topNavBar">
+                <ul class="nav navbar-nav">
+
+                </ul>
+
+                <form class="navbar-form navbar-left" role="search" method="post" action="{% url 'photos:search' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="input" value="">
+                    </div>
+                    <button type="submit" class="btn btn-default">Search</button>
+                </form>
+
+                <div class="navbar-form navbar-right">
+                    {% if user.is_authenticated %}
+                        <p><a href="/users/logout/">Logout</a></p>
+                    {% else %}
+                        <form class="navbar-form navbar-right" method="get" action="{% url 'users:login' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default" >LogIn</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="navbar-form navbar-right">
+                    {% if user.is_authenticated %}
+                    <p style="color:white;">{{ user.username }}</p>
+                    {% else %}<a href="/users/register/">
+                        <button class="btn btn-default">Signup</button></a>
+                    {% endif %}
+                </div>
+
+                <div class="navbar-form navbar-right">
+                     <div class="cart">
+                      {% with total_items=cart|length %}
+                        {% if cart|length > 0 %}
+                          Your cart:
+                          <a href="{% url 'cart:cart_detail' %}">
+                            {{ total_items }} item{{ total_items|pluralize }},
+                            ${{ cart.get_total_price }}
+                          </a>
+                        {% else %}
+                           <font color="red">Your cart is empty.</font>
+                        {% endif %}
+                      {% endwith %}
+                    </div>
+                </div>
+
+                <div class="navbar-form navbar-left">
+                    {% if user.is_authenticated %}
+                        <p><a href="{%url 'upload:upload_detail' %}">Upload</a></p>
+                    {% else %}
+                        <p><a href="/users/register/">Upload</a></p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </nav>
+
+    {% block some_page_contents %}
+    {% endblock %}
+
+</body>
+</html>

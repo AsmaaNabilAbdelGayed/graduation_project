@@ -1,0 +1,30 @@
+{% extends 'photos/base.html' %}
+
+{% block some_page_contents %}
+
+    {% load staticfiles %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'photos/pins.css' %}">
+    <div class="container">
+        <ul>
+            {% for image in related_images %}
+                <li style="display: inline">
+                    <div id="wrapper">
+                        <div id="columns">
+                            <div class="pin">
+                                <a href="{% url 'photos:test' image.id %}" >
+                                    <img src="{{ image.photo.url }}" class="img-responsive" style="float: left;"/>
+                                    <form action="{% url 'cart:cart_add' image.id %}" method="post">
+                                        {{ cart_product_form }}
+                                        {% csrf_token %}
+                                        <input type="submit" value="Add to cart">
+                                    </form>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
